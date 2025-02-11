@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机端九宫格抽奖</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .lottery-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .lottery-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .lottery-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .lottery-item p {
+            margin: 8px 0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .lottery-item.active {
+            background-color: #ffd700;
+        }
+
+        #start-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lottery-container" id="lottery-container">
+        <div class="lottery-item">
+            <img src="https://img2.baidu.com/it/u=3998653376,2478212237&fm=253&fmt=auto&app=138&f=JPEG?w=822&h=800" alt="菜品1">
+            <p>宫保鸡丁</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://pica.zhimg.com/v2-03acd43b7f5083bb2976b9f41899c96e.jpg?source=382ee89a" alt="菜品2">
+            <p>鱼香肉丝</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://qcloud.dpfile.com/pc/_p2ScpP85UpOivz3B37fvtIAbvOez8g8WJbCX0YpqZ9OvnLpWKfeEkt4lRrW2v6K.jpg" alt="菜品3">
+            <p>糖醋排骨</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://img1.baidu.com/it/u=3037673411,571679465&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1062" alt="菜品4">
+            <p>麻婆豆腐</p>
+        </div>
+        <button id="start-button">开始抽奖</button>
+        <div class="lottery-item">
+            <img src="https://img0.baidu.com/it/u=3247437342,2792840481&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=1067" alt="菜品5">
+            <p>回锅肉</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://p1.meituan.net/biztone/17f779b6e99fa25b05206b5f6205e70a1013638.jpg%40watermark%3D0" alt="菜品6">
+            <p>甲鱼汤</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://img2.baidu.com/it/u=3048019802,2057422258&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1070" alt="菜品7">
+            <p>油焖大虾</p>
+        </div>
+        <div class="lottery-item">
+            <img src="https://img2.baidu.com/it/u=2386409460,4104891744&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=821" alt="菜品8">
+            <p>清蒸鱼</p>
+        </div>
+    </div>
+
+    <script>
+        const lotteryContainer = document.getElementById('lottery-container');
+        const startButton = document.getElementById('start-button');
+        const items = Array.from(lotteryContainer.children).filter(item => item.classList.contains('lottery-item'));
+        let currentIndex = 0;
+        let isRunning = false;
+        let intervalId;
+
+        function startLottery() {
+            if (isRunning) return;
+            isRunning = true;
+            startButton.disabled = true;
+
+            // 随机生成抽奖时间，范围在 3 - 6 秒
+            const duration = Math.floor(Math.random() * 3000) + 3000;
+            const startTime = Date.now();
+
+            intervalId = setInterval(() => {
+                // 移除上一个高亮效果
+                items[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % items.length;
+                // 添加当前高亮效果
+                items[currentIndex].classList.add('active');
+
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime >= duration) {
+                    clearInterval(intervalId);
+                    isRunning = false;
+                    startButton.disabled = false;
+                    const winningDish = items[currentIndex].querySelector('p').textContent;
+                    alert(`恭喜您，抽到了：${winningDish}`);
+                }
+            }, 100);
+        }
+
+        startButton.addEventListener('click', startLottery);
+    </script>
+</body>
+
+</html>
